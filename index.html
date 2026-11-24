@@ -3,136 +3,403 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Selector de Archivos - Intermission</title>
-  <!-- Evita el error 404 de favicon.ico -->
+  <title>Oasis Intermission — Selector</title>
   <link rel="icon" href="data:,">
   <style>
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.06);
+      --glass-border: rgba(255, 255, 255, 0.18);
+      --glass-highlight: rgba(255, 255, 255, 0.35);
+      --text-main: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.65);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #0d1117;
-      color: #c9d1d9;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      background-color: #05070e;
+      color: var(--text-main);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      margin: 0;
+      overflow: hidden;
       padding: 20px;
+      position: relative;
     }
-    .contenedor {
-      background-color: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 10px;
-      padding: 24px 32px;
-      max-width: 600px;
+
+    .bg-orbs {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.65;
+      animation: floatOrb 14s infinite alternate ease-in-out;
+    }
+
+    .orb-1 {
+      width: 380px;
+      height: 380px;
+      background: radial-gradient(circle, #3b82f6, #1d4ed8);
+      top: 10%;
+      left: 15%;
+    }
+
+    .orb-2 {
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, #10b981, #047857);
+      bottom: 8%;
+      right: 15%;
+      animation-delay: -5s;
+    }
+
+    .orb-3 {
+      width: 280px;
+      height: 280px;
+      background: radial-gradient(circle, #8b5cf6, #5b21b6);
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation-delay: -9s;
+    }
+
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(45px, -35px) scale(1.12); }
+    }
+
+    .glass-panel {
+      position: relative;
+      z-index: 1;
       width: 100%;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      max-width: 540px;
+      padding: 36px 32px;
+      border-radius: 32px;
+      background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.11) 0%,
+        rgba(255, 255, 255, 0.03) 100%
+      );
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border: 1px solid var(--glass-border);
+      box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.65),
+        inset 0 1px 1px 0 var(--glass-highlight),
+        inset 0 -1px 1px 0 rgba(255, 255, 255, 0.05);
+      will-change: transform;
     }
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 12px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #e2e8f0;
+      margin-bottom: 10px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
     h1 {
-      font-size: 1.4rem;
-      margin-top: 0;
-      color: #f0f6fc;
-      border-bottom: 1px solid #30363d;
-      padding-bottom: 12px;
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 6px;
     }
-    li {
-      margin: 12px 0;
-    }
-    a {
+
+    .cards-grid {
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .glass-card {
+      position: relative;
+      display: flex;
       align-items: center;
-      padding: 14px 16px;
-      background-color: #21262d;
-      border: 1px solid #30363d;
-      border-radius: 6px;
-      color: #58a6ff;
+      gap: 18px;
+      padding: 18px 20px;
+      border-radius: 22px;
       text-decoration: none;
-      font-weight: 500;
-      transition: background-color 0.2s, border-color 0.2s;
-      word-break: break-all;
+      color: var(--text-main);
+      background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.09) 0%,
+        rgba(255, 255, 255, 0.02) 100%
+      );
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow:
+        0 10px 25px -5px rgba(0, 0, 0, 0.35),
+        inset 0 1px 1px rgba(255, 255, 255, 0.3);
+      overflow: hidden;
+      cursor: pointer;
+      will-change: transform;
     }
-    a:hover {
-      background-color: #30363d;
-      border-color: #8b949e;
-      text-decoration: underline;
+
+    .glass-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        260px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(255, 255, 255, 0.22),
+        transparent 70%
+      );
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
     }
-    .ruta {
-      display: block;
-      font-size: 0.8rem;
-      color: #8b949e;
-      margin-top: 4px;
-      font-weight: normal;
+
+    .glass-card:hover::before {
+      opacity: 1;
     }
-    .estado {
-      color: #8b949e;
-      font-style: italic;
+
+    .icon-box {
+      flex-shrink: 0;
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      box-shadow:
+        0 8px 16px rgba(0, 0, 0, 0.3),
+        inset 0 1px 1px rgba(255, 255, 255, 0.5);
+    }
+
+    .icon-high {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.45), rgba(59, 130, 246, 0.25));
+      border: 1px solid rgba(167, 139, 250, 0.45);
+      color: #ddd6fe;
+    }
+
+    .icon-opt {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.45), rgba(6, 182, 212, 0.25));
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      color: #a7f3d0;
+    }
+
+    .info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .file-title {
+      font-size: 1.02rem;
+      font-weight: 600;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .arrow {
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: rgba(255, 255, 255, 0.85);
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .glass-card:hover .arrow {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateX(3px);
     }
   </style>
 </head>
 <body>
 
-  <div class="contenedor">
-    <h1>Archivos HTML en Intermission</h1>
-    <ul id="lista-archivos">
-      <li class="estado">Buscando archivos en el repositorio...</li>
-    </ul>
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
   </div>
 
+  <main class="glass-panel" id="panel">
+    <div class="header">
+      <span class="badge">ZaiBlock / Intermission</span>
+      <h1>Oasis Intermission</h1>
+      <p class="subtitle">Selecciona la versión que deseas ejecutar</p>
+    </div>
+
+    <div class="cards-grid">
+      <a class="glass-card spring-card" href="https://github.io">
+        <div class="icon-box icon-high">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="4" width="16" height="16" rx="3"></rect>
+            <rect x="9" y="9" width="6" height="6" rx="1"></rect>
+            <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"></path>
+          </svg>
+        </div>
+        <div class="info">
+          <div class="file-title">OASIS INTERMISSION_MUSTGOODPC</div>
+          <div class="file-desc">Edición gráfica completa · Requiere buen hardware</div>
+        </div>
+        <div class="arrow">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </div>
+      </a>
+
+      <a class="glass-card spring-card" href="https://github.io">
+        <div class="icon-box icon-opt">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <div class="info">
+          <div class="file-title">OASIS_INTERMISSION_OPTIMIZATED</div>
+          <div class="file-desc">Edición ligera y optimizada · Máximos FPS</div>
+        </div>
+        <div class="arrow">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </div>
+      </a>
+    </div>
+  </main>
   <script>
-    // URLs fijas para evitar errores al copiar y pegar
-    const basePagesUrl = "https://github.io";
-    const apiUrl = "https://github.com";
+    class Spring {
+      constructor(value = 1, stiffness = 280, damping = 18, mass = 1) {
+        this.value = value;
+        this.target = value;
+        this.velocity = 0;
+        this.stiffness = stiffness;
+        this.damping = damping;
+        this.mass = mass;
+      }
 
-    async function cargarArchivosHTML() {
-      const lista = document.getElementById("lista-archivos");
-
-      try {
-        const respuesta = await fetch(apiUrl);
-        if (!respuesta.ok) throw new Error("No se pudo conectar con la API de GitHub (" + respuesta.status + ")");
-
-        const archivos = await respuesta.json();
-
-        const htmls = archivos.filter(item =>
-          item.type === "file" &&
-          item.name.toLowerCase().endsWith(".html") &&
-          item.name.toLowerCase() !== "index.html"
-        );
-
-        lista.innerHTML = "";
-
-        if (htmls.length === 0) {
-          lista.innerHTML = '<li class="estado">No hay otros archivos HTML en este repositorio.</li>';
-          return;
-        }
-
-        htmls.forEach(archivo => {
-          const urlDestino = basePagesUrl + encodeURIComponent(archivo.name);
-
-          const li = document.createElement("li");
-          li.innerHTML = `
-            <a href="${urlDestino}">
-              <div>
-                <span>Ir a <strong>${archivo.name}</strong></span>
-                <span class="ruta">${urlDestino}</span>
-              </div>
-              <span>&rarr;</span>
-            </a>
-          `;
-          lista.appendChild(li);
-        });
-
-      } catch (error) {
-        lista.innerHTML = `<li class="estado">Error al cargar archivos: ${error.message}</li>`;
+      update(dt) {
+        const force = -this.stiffness * (this.value - this.target);
+        const dampingForce = -this.damping * this.velocity;
+        const acceleration = (force + dampingForce) / this.mass;
+        this.velocity += acceleration * dt;
+        this.value += this.velocity * dt;
+        return this.value;
       }
     }
 
-    cargarArchivosHTML();
-  </script>
+    const cards = Array.from(document.querySelectorAll('.spring-card')).map((el, index) => {
+      const scaleSpring = new Spring(0.75, 260, 16, 1);
+      const ySpring = new Spring(35, 240, 17, 1);
 
+      setTimeout(() => {
+        scaleSpring.target = 1;
+        ySpring.target = 0;
+      }, 80 + index * 110);
+
+      el.addEventListener('pointerenter', () => {
+        scaleSpring.target = 1.035;
+        ySpring.target = -3;
+      });
+
+      el.addEventListener('pointerleave', () => {
+        scaleSpring.target = 1;
+        ySpring.target = 0;
+      });
+
+      el.addEventListener('pointerdown', () => {
+        scaleSpring.target = 0.96;
+        ySpring.target = 2;
+      });
+
+      el.addEventListener('pointerup', () => {
+        scaleSpring.target = 1.035;
+        ySpring.target = -3;
+      });
+
+      el.addEventListener('pointermove', (e) => {
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        el.style.setProperty('--mouse-x', `${x}px`);
+        el.style.setProperty('--mouse-y', `${y}px`);
+      });
+
+      return { el, scaleSpring, ySpring };
+    });
+
+    const panel = document.getElementById('panel');
+    const rotXSpring = new Spring(0, 150, 18, 1);
+    const rotYSpring = new Spring(0, 150, 18, 1);
+
+    document.addEventListener('pointermove', (e) => {
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      rotYSpring.target = ((e.clientX - cx) / cx) * 4;
+      rotXSpring.target = -((e.clientY - cy) / cy) * 4;
+    });
+
+    document.addEventListener('pointerleave', () => {
+      rotXSpring.target = 0;
+      rotYSpring.target = 0;
+    });
+
+    let lastTime = performance.now();
+    function animate(now) {
+      const dt = Math.min((now - lastTime) / 1000, 0.05);
+      lastTime = now;
+
+      const rx = rotXSpring.update(dt);
+      const ry = rotYSpring.update(dt);
+      panel.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+
+      cards.forEach(({ el, scaleSpring, ySpring }) => {
+        const s = scaleSpring.update(dt);
+        const y = ySpring.update(dt);
+        el.style.transform = `translate3d(0, ${y}px, 0) scale(${s})`;
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+  </script>
 </body>
 </html>
