@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Selector de Archivos - Intermission</title>
+  <!-- Evita el error 404 de favicon.ico -->
+  <link rel="icon" href="data:,">
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -82,22 +84,19 @@
   </div>
 
   <script>
-    const usuario = "ZaiBlock";
-    const repo = "intermission";
-    // URL base de tu GitHub Pages
-    const basePagesUrl = `https://${usuario.toLowerCase()}.github.io/${repo}/`;
-    const apiUrl = `https://github.com{usuario}/${repo}/contents/`;
+    // URLs fijas para evitar errores al copiar y pegar
+    const basePagesUrl = "https://github.io";
+    const apiUrl = "https://github.com";
 
     async function cargarArchivosHTML() {
       const lista = document.getElementById("lista-archivos");
 
       try {
         const respuesta = await fetch(apiUrl);
-        if (!respuesta.ok) throw new Error("No se pudo conectar con GitHub");
+        if (!respuesta.ok) throw new Error("No se pudo conectar con la API de GitHub (" + respuesta.status + ")");
 
         const archivos = await respuesta.json();
 
-        // Filtra solo archivos .html y excluye el propio index.html
         const htmls = archivos.filter(item =>
           item.type === "file" &&
           item.name.toLowerCase().endsWith(".html") &&
@@ -112,7 +111,6 @@
         }
 
         htmls.forEach(archivo => {
-          // Codifica espacios o caracteres especiales para que la URL funcione bien
           const urlDestino = basePagesUrl + encodeURIComponent(archivo.name);
 
           const li = document.createElement("li");
