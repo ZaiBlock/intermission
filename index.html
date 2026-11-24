@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Selector de Archivos - Intermission</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #0d1117;
+      color: #c9d1d9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .contenedor {
+      background-color: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 24px 32px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+    h1 {
+      font-size: 1.4rem;
+      margin-top: 0;
+      color: #f0f6fc;
+      border-bottom: 1px solid #30363d;
+      padding-bottom: 12px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    li {
+      margin: 12px 0;
+    }
+    a {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      background-color: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      color: #58a6ff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background-color 0.2s, border-color 0.2s;
+      word-break: break-all;
+    }
+    a:hover {
+      background-color: #30363d;
+      border-color: #8b949e;
+      text-decoration: underline;
+    }
+    .ruta {
+      display: block;
+      font-size: 0.8rem;
+      color: #8b949e;
+      margin-top: 4px;
+      font-weight: normal;
+    }
+    .estado {
+      color: #8b949e;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="contenedor">
+    <h1>Archivos HTML en Intermission</h1>
+    <ul id="lista-archivos">
+      <li class="estado">Buscando archivos en el repositorio...</li>
+    </ul>
+  </div>
+
+  <script>
+    const usuario = "ZaiBlock";
+    const repo = "intermission";
+    // URL base de tu GitHub Pages
+    const basePagesUrl = `https://${usuario.toLowerCase()}.github.io/${repo}/`;
+    const apiUrl = `https://github.com{usuario}/${repo}/contents/`;
+
+    async function cargarArchivosHTML() {
+      const lista = document.getElementById("lista-archivos");
+
+      try {
+        const respuesta = await fetch(apiUrl);
+        if (!respuesta.ok) throw new Error("No se pudo conectar con GitHub");
+
+        const archivos = await respuesta.json();
+
+        // Filtra solo archivos .html y excluye el propio index.html
+        const htmls = archivos.filter(item =>
+          item.type === "file" &&
+          item.name.toLowerCase().endsWith(".html") &&
+          item.name.toLowerCase() !== "index.html"
+        );
+
+        lista.innerHTML = "";
+
+        if (htmls.length === 0) {
+          lista.innerHTML = '<li class="estado">No hay otros archivos HTML en este repositorio.</li>';
+          return;
+        }
+
+        htmls.forEach(archivo => {
+          // Codifica espacios o caracteres especiales para que la URL funcione bien
+          const urlDestino = basePagesUrl + encodeURIComponent(archivo.name);
+
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <a href="${urlDestino}">
+              <div>
+                <span>Ir a <strong>${archivo.name}</strong></span>
+                <span class="ruta">${urlDestino}</span>
+              </div>
+              <span>&rarr;</span>
+            </a>
+          `;
+          lista.appendChild(li);
+        });
+
+      } catch (error) {
+        lista.innerHTML = `<li class="estado">Error al cargar archivos: ${error.message}</li>`;
+      }
+    }
+
+    cargarArchivosHTML();
+  </script>
+
+</body>
+</html>
